@@ -1,0 +1,14 @@
+{
+  "name": "The System — Solo Leveling",
+  "short_name": "SYSTEM",
+  "description": "A self-development system. Log the work, get judged on it, level up.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05060B",
+  "theme_color": "#05060B",
+  "categories": ["health", "productivity", "lifestyle"],
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

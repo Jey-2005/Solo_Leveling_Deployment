@@ -1,0 +1,515 @@
+/* ==========================================================================
+   THE SYSTEM — design system
+   --------------------------------------------------------------------------
+   Direction: a holographic interface projected into a dark room. Everything
+   is a *window* the System has opened — cut corners, bracket registration
+   marks, a faint scan sweep, light that leaks from the edges.
+
+   Nothing here uses artwork. The whole aesthetic is CSS and SVG, so there is
+   no licensed imagery in the bundle.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Depth — five steps from the void to a lit surface */
+    --void:    #05060B;
+    --abyss:   #0A0E1A;
+    --slate:   #111726;
+    --raised:  #18203241;
+    --line:    #1E2739;
+    --line-lit:#2C3A55;
+
+    /* Light. Mana-blue is the System's own colour; monarch-violet is
+       reserved for things the Hunter has earned. */
+    --mana:      #3EC6FF;
+    --mana-deep: #0E7FB8;
+    --monarch:   #A78BFA;
+    --monarch-deep: #6D3EE8;
+    --danger:    #FF3B5C;
+    --gold:      #F5C542;
+    --jade:      #34D399;
+
+    /* Ink */
+    --bone: #E9EFF8;
+    --ash:  #93A1B8;
+    --dim:  #5C6880;
+
+    --radius: 2px;      /* near-square: this is machinery, not a consumer app */
+
+    color-scheme: dark;
+  }
+
+  * { border-color: var(--line); }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--bone);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  /* Ambient gate-light. Fixed so it never scrolls — the room is lit, not the page. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(900px 600px at 12% -10%, rgba(62,198,255,.10), transparent 60%),
+      radial-gradient(800px 700px at 92% 8%,  rgba(167,139,250,.09), transparent 62%),
+      radial-gradient(1000px 800px at 50% 115%, rgba(14,127,184,.07), transparent 60%);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Chakra Petch', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  input, textarea, select, button { font: inherit; color: inherit; }
+
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
+  ::selection { background: rgba(62,198,255,.28); color: #fff; }
+
+  :focus-visible {
+    outline: 2px solid var(--mana);
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: var(--line-lit); border: 2px solid var(--void); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--mana-deep); }
+}
+
+/* ==========================================================================
+   SIGNATURE — the system window
+   ========================================================================== */
+@layer components {
+
+  /* Base panel: corner-cut, hairline edge, faint inner light from the top. */
+  .sys-panel {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(62,198,255,.045) 0%, transparent 42%),
+      var(--abyss);
+    border: 1px solid var(--line);
+    clip-path: polygon(
+      14px 0, 100% 0, 100% calc(100% - 14px),
+      calc(100% - 14px) 100%, 0 100%, 0 14px
+    );
+  }
+
+  .sys-panel--lit {
+    border-color: rgba(62,198,255,.32);
+    box-shadow: 0 0 0 1px rgba(62,198,255,.06), 0 18px 50px -28px rgba(62,198,255,.5);
+  }
+
+  .sys-panel--monarch {
+    border-color: rgba(167,139,250,.34);
+    background: linear-gradient(180deg, rgba(167,139,250,.06) 0%, transparent 44%), var(--abyss);
+    box-shadow: 0 18px 50px -28px rgba(167,139,250,.55);
+  }
+
+  .sys-panel--danger {
+    border-color: rgba(255,59,92,.36);
+    background: linear-gradient(180deg, rgba(255,59,92,.06) 0%, transparent 44%), var(--abyss);
+  }
+
+  /* Registration brackets. Four corners, drawn with borders on pseudo-elements
+     plus two spans, so the panel reads as "targeted" rather than merely boxed. */
+  .sys-brackets::before,
+  .sys-brackets::after,
+  .sys-brackets > .bracket-bl,
+  .sys-brackets > .bracket-br {
+    content: '';
+    position: absolute;
+    width: 13px; height: 13px;
+    border-color: var(--mana);
+    opacity: .85;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .sys-brackets::before { top: -1px;    left: -1px;  border-top: 2px solid;    border-left: 2px solid; }
+  .sys-brackets::after  { top: -1px;    right: -1px; border-top: 2px solid;    border-right: 2px solid; }
+  .sys-brackets > .bracket-bl { bottom: -1px; left: -1px;  border-bottom: 2px solid; border-left: 2px solid; }
+  .sys-brackets > .bracket-br { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+
+  .sys-brackets--monarch::before,
+  .sys-brackets--monarch::after,
+  .sys-brackets--monarch > .bracket-bl,
+  .sys-brackets--monarch > .bracket-br { border-color: var(--monarch); }
+
+  .sys-brackets--danger::before,
+  .sys-brackets--danger::after,
+  .sys-brackets--danger > .bracket-bl,
+  .sys-brackets--danger > .bracket-br { border-color: var(--danger); }
+
+  /* Eyebrow label — the small monospace tag that names every window. */
+  .sys-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--mana);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sys-eyebrow::before {
+    content: '';
+    width: 5px; height: 5px;
+    background: currentColor;
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* Data readout */
+  .sys-num {
+    font-family: 'Chakra Petch', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .sys-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Buttons ---------------------------------------------------------------- */
+  .sys-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--line-lit);
+    clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+    cursor: pointer;
+    transition: background .16s, color .16s, border-color .16s, box-shadow .16s;
+    white-space: nowrap;
+  }
+  .sys-btn:hover:not(:disabled) {
+    border-color: var(--mana);
+    color: var(--mana);
+    background: rgba(62,198,255,.07);
+  }
+  .sys-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .sys-btn--primary {
+    background: linear-gradient(135deg, var(--mana) 0%, var(--mana-deep) 100%);
+    border-color: transparent;
+    color: #04121C;
+    font-weight: 700;
+  }
+  .sys-btn--primary:hover:not(:disabled) {
+    color: #04121C;
+    background: linear-gradient(135deg, #6BD6FF 0%, var(--mana) 100%);
+    box-shadow: 0 0 26px -4px rgba(62,198,255,.65);
+  }
+
+  .sys-btn--monarch {
+    background: linear-gradient(135deg, var(--monarch) 0%, var(--monarch-deep) 100%);
+    border-color: transparent;
+    color: #0B0517;
+    font-weight: 700;
+  }
+  .sys-btn--monarch:hover:not(:disabled) {
+    color: #0B0517;
+    box-shadow: 0 0 26px -4px rgba(167,139,250,.7);
+  }
+
+  .sys-btn--danger { border-color: rgba(255,59,92,.5); color: #FF7C93; }
+  .sys-btn--danger:hover:not(:disabled) {
+    border-color: var(--danger); color: #fff; background: rgba(255,59,92,.14);
+  }
+
+  .sys-btn--sm { padding: 6px 13px; font-size: 11px; }
+  .sys-btn--ghost { border-color: transparent; color: var(--ash); }
+  .sys-btn--ghost:hover:not(:disabled) { color: var(--bone); background: rgba(255,255,255,.04); }
+
+  /* Inputs ----------------------------------------------------------------- */
+  .sys-input {
+    width: 100%;
+    background: rgba(5,6,11,.75);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 13px;
+    color: var(--bone);
+    font-size: 14px;
+    transition: border-color .16s, box-shadow .16s, background .16s;
+  }
+  .sys-input::placeholder { color: var(--dim); }
+  .sys-input:focus {
+    outline: none;
+    border-color: var(--mana);
+    background: rgba(62,198,255,.05);
+    box-shadow: 0 0 0 3px rgba(62,198,255,.11);
+  }
+  .sys-input:disabled { opacity: .5; }
+  textarea.sys-input { resize: vertical; min-height: 92px; line-height: 1.6; }
+  select.sys-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2393A1B8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+  }
+  select.sys-input option { background: var(--abyss); color: var(--bone); }
+
+  .sys-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ash);
+    margin-bottom: 6px;
+  }
+
+  /* Rank sigil ------------------------------------------------------------- */
+  .rank-sigil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: var(--slate);
+    color: var(--ash);
+    border: 0;
+  }
+  .rank-E { background: linear-gradient(150deg,#2A3242,#161C29); color:#9AA7BC; }
+  .rank-D { background: linear-gradient(150deg,#3B4B3A,#1B241C); color:#8FD49B; }
+  .rank-C { background: linear-gradient(150deg,#1F4A5E,#0E2430); color:#63D3FF; }
+  .rank-B { background: linear-gradient(150deg,#2B3A78,#141B3A); color:#94AAFF; }
+  .rank-A { background: linear-gradient(150deg,#5B2C8F,#2A1247); color:#CBAAFF; }
+  .rank-S { background: linear-gradient(150deg,#8A6A12,#3A2C05); color:#FFDE7A; box-shadow:0 0 20px -4px rgba(245,197,66,.6); }
+  .rank-NATIONAL {
+    background: linear-gradient(150deg,#8A1230,#3A0512);
+    color:#FFB3C1;
+    box-shadow: 0 0 24px -4px rgba(255,59,92,.7);
+  }
+
+  /* Tabs ------------------------------------------------------------------- */
+  .sys-tab {
+    position: relative;
+    padding: 9px 16px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--dim);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: color .16s;
+    white-space: nowrap;
+  }
+  .sys-tab:hover { color: var(--ash); }
+  .sys-tab[data-active='true'] { color: var(--mana); }
+  .sys-tab[data-active='true']::after {
+    content: '';
+    position: absolute;
+    left: 12px; right: 12px; bottom: 0;
+    height: 2px;
+    background: var(--mana);
+    box-shadow: 0 0 12px var(--mana);
+  }
+
+  /* Progress --------------------------------------------------------------- */
+  .sys-bar {
+    position: relative;
+    height: 7px;
+    background: rgba(5,6,11,.85);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .sys-bar__fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--mana-deep), var(--mana));
+    box-shadow: 0 0 14px rgba(62,198,255,.75);
+    transition: width .7s cubic-bezier(.16,1,.3,1);
+  }
+  .sys-bar__fill--monarch { background: linear-gradient(90deg, var(--monarch-deep), var(--monarch)); box-shadow: 0 0 14px rgba(167,139,250,.7); }
+  .sys-bar__fill--gold    { background: linear-gradient(90deg, #A87F10, var(--gold)); box-shadow: 0 0 14px rgba(245,197,66,.6); }
+  .sys-bar__fill--jade    { background: linear-gradient(90deg, #14806A, var(--jade)); box-shadow: 0 0 14px rgba(52,211,153,.55); }
+  .sys-bar__fill--danger  { background: linear-gradient(90deg, #8E1026, var(--danger)); box-shadow: 0 0 14px rgba(255,59,92,.6); }
+
+  /* Chips ------------------------------------------------------------------ */
+  .sys-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border: 1px solid var(--line-lit);
+    color: var(--ash);
+    background: rgba(255,255,255,.02);
+  }
+  .sys-chip--mana    { border-color: rgba(62,198,255,.4);  color: var(--mana);    background: rgba(62,198,255,.08); }
+  .sys-chip--monarch { border-color: rgba(167,139,250,.42);color: var(--monarch); background: rgba(167,139,250,.08); }
+  .sys-chip--danger  { border-color: rgba(255,59,92,.42);  color: #FF7C93;        background: rgba(255,59,92,.09); }
+  .sys-chip--gold    { border-color: rgba(245,197,66,.42); color: var(--gold);    background: rgba(245,197,66,.08); }
+  .sys-chip--jade    { border-color: rgba(52,211,153,.4);  color: var(--jade);    background: rgba(52,211,153,.08); }
+
+  /* Grid backdrop for hero surfaces */
+  .sys-grid-bg {
+    background-image:
+      linear-gradient(rgba(62,198,255,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(62,198,255,.055) 1px, transparent 1px);
+    background-size: 46px 46px;
+  }
+
+  .sys-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line-lit) 18%, var(--line-lit) 82%, transparent);
+  }
+}
+
+/* ==========================================================================
+   MOTION — one orchestrated entrance, then stillness
+   ========================================================================== */
+@layer utilities {
+  @keyframes sys-open {
+    0%   { opacity: 0; transform: translateY(9px) scaleY(.965); filter: blur(5px); }
+    100% { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes sys-sweep {
+    0%   { transform: translateY(-110%); opacity: 0; }
+    12%  { opacity: .5; }
+    100% { transform: translateY(720%); opacity: 0; }
+  }
+  @keyframes sys-pulse {
+    0%,100% { opacity: 1; }
+    50%     { opacity: .45; }
+  }
+  @keyframes sys-slide-in {
+    0%   { opacity: 0; transform: translateX(26px); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes sys-spin { to { transform: rotate(360deg); } }
+  @keyframes sys-rise {
+    0%   { opacity: 0; transform: translateY(0) scale(.9); }
+    22%  { opacity: 1; transform: translateY(-14px) scale(1); }
+    100% { opacity: 0; transform: translateY(-52px) scale(1); }
+  }
+
+  .anim-open  { animation: sys-open .42s cubic-bezier(.16,1,.3,1) both; }
+  .anim-slide { animation: sys-slide-in .34s cubic-bezier(.16,1,.3,1) both; }
+  .anim-pulse { animation: sys-pulse 2s ease-in-out infinite; }
+  .anim-spin  { animation: sys-spin 1s linear infinite; }
+  .anim-rise  { animation: sys-rise 1.5s ease-out forwards; }
+
+  /* Stagger children of a freshly opened window */
+  .anim-stagger > * { animation: sys-open .42s cubic-bezier(.16,1,.3,1) both; }
+  .anim-stagger > *:nth-child(1) { animation-delay: .02s; }
+  .anim-stagger > *:nth-child(2) { animation-delay: .07s; }
+  .anim-stagger > *:nth-child(3) { animation-delay: .12s; }
+  .anim-stagger > *:nth-child(4) { animation-delay: .17s; }
+  .anim-stagger > *:nth-child(5) { animation-delay: .22s; }
+  .anim-stagger > *:nth-child(6) { animation-delay: .27s; }
+  .anim-stagger > *:nth-child(7) { animation-delay: .32s; }
+  .anim-stagger > *:nth-child(8) { animation-delay: .37s; }
+
+  /* Scan sweep — one thin line crossing the panel, once, on open */
+  .sys-scan { position: relative; overflow: hidden; }
+  .sys-scan::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 14%;
+    background: linear-gradient(180deg, transparent, rgba(62,198,255,.16), transparent);
+    animation: sys-sweep 2.6s cubic-bezier(.4,0,.6,1) 1;
+    pointer-events: none;
+  }
+
+  .text-glow-mana    { text-shadow: 0 0 18px rgba(62,198,255,.55); }
+  .text-glow-monarch { text-shadow: 0 0 18px rgba(167,139,250,.55); }
+  .text-glow-gold    { text-shadow: 0 0 18px rgba(245,197,66,.5); }
+  .text-glow-danger  { text-shadow: 0 0 18px rgba(255,59,92,.5); }
+
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+  .safe-top    { padding-top: max(env(safe-area-inset-top), 0px); }
+}
+
+/* Honour the OS setting and the in-app toggle. Content still arrives; it just
+   stops moving. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+html[data-reduce-motion='true'] *,
+html[data-reduce-motion='true'] *::before,
+html[data-reduce-motion='true'] *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+}
+
+@media print {
+  body::before { display: none; }
+  .no-print { display: none !important; }
+}
+
+/* --- late additions used by feature screens ------------------------- */
+.sys-bar__fill--mana { background: linear-gradient(90deg, var(--mana-deep), var(--mana)); }
+
+.anim-spin-slow { animation: sys-spin 48s linear infinite; }
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Recharts sits on a dark ground; strip its light defaults. */
+.recharts-cartesian-axis-tick text { fill: var(--dim); font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+.recharts-cartesian-grid line { stroke: var(--line); }
+.recharts-tooltip-wrapper { outline: none; }
+.recharts-surface { overflow: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-spin-slow { animation: none; }
+}
+html[data-reduce-motion='true'] .anim-spin-slow { animation: none; }

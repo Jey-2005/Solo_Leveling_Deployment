@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/**/*.js": { "memory": 1024, "maxDuration": 60 }
+  },
+  "crons": [
+    { "path": "/api/cron?job=hourly", "schedule": "0 * * * *" },
+    { "path": "/api/cron?job=daily",  "schedule": "30 0 * * *" }
+  ],
+  "rewrites": [
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}
